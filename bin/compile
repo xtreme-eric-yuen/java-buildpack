@@ -22,6 +22,35 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'java_buildpack/buildpack'
 
 build_dir = ARGV[0]
+cache_dir = ARGV[1]
+
+# fetch and cache the vulcan build
+OPENCV_PACKAGE="http://s3.amazonaws.com/tznode/vulcan-compiled-opencv.tgz"
+OPENCV_PACKAGE_ETAG=$(curl -s --head "$OPENCV_PACKAGE" | grep -Ei '^etag' | sed -r 's/^etag|[^a-zA-Z0-9]+//gi')
+VENDORED_OPENCV="/app/vendor/opencv"
+OPENCV_CACHE="$CACHE_DIR/opencv_$OPENCV_PACKAGE_ETAG";
+
+if [ -d "$OPENCV_CACHE" ]; then
+  echo "-----> Reusing cached OpenCV ($OPENCV_PACKAGE_ETAG)"
+  cp -a $OPENCV_CACHE $VENDORED_OPENCV
+else
+  echo "-----> Fetching and caching OpenCV ($OPENCV_PACKAGE_ETAG)"
+  mkdir -p $VENDORED_OPENCV
+  curl $OPENCV_PACKAGE -s -o - | tar xzf - -C $VENDORED_OPENCV
+  mkdir -p $CACHE_DIR
+  cp -a $VENDORED_OPENCV $OPENCV_CACHE
+fi
+
+# vendor
+echo "-----> Vendoring OpenCV shared objects into slug"
+VENDORED_SO="$BUILD_DIR/vendor/opencv/lib"
+mkdir -p $VENDORED_SO
+cp -a "$VENDORED_OPENCV/lib/." $VENDORED_SO
+
+# runtime
+mkdir -p "$BUILD_DIR/.profile.d"
+echo "export LD_LIBRARY_PATH=\"\$HOME/vendor/opencv/lib:\$LD_LIBRARY_PATH\"" > $BUILD_DIR/.profile.d/opencv.sh
+echo "export PKG_CONFIG_PATH=\"\$HOME/vendor/opencv/lib/pkgconfig:\$PKG_CONFIG_PATH\"" >> $BUILD_DIR/.profile.d/opencv.sh
 
 JavaBuildpack::Buildpack.with_buildpack(build_dir, 'Compile failed with exception %s') do |buildpack|
   buildpack.compile
