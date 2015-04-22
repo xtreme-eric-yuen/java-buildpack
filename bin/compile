@@ -23,7 +23,7 @@ require 'java_buildpack/buildpack'
 
 build_dir = ARGV[0]
 
-exec("sudo apt-get install opencv")
+exec("sudo -S apt-get install opencv")
 
 JavaBuildpack::Buildpack.with_buildpack(build_dir, 'Compile failed with exception %s') do |buildpack|
   buildpack.compile
