@@ -26,9 +26,9 @@ cache_dir = ARGV[1]
 
 # fetch and cache the vulcan build
 OPENCV_PACKAGE="http://s3.amazonaws.com/tznode/vulcan-compiled-opencv.tgz"
-OPENCV_PACKAGE_ETAG=$(curl -s --head "$OPENCV_PACKAGE" | grep -Ei '^etag' | sed -r 's/^etag|[^a-zA-Z0-9]+//gi')
+OPENCV_PACKAGE_ETAG="curl -s --head #{OPENCV_PACKAGE} | grep -Ei '^etag' | sed -r 's/^etag|[^a-zA-Z0-9]+//gi'"
 VENDORED_OPENCV="/app/vendor/opencv"
-OPENCV_CACHE="$CACHE_DIR/opencv_$OPENCV_PACKAGE_ETAG";
+OPENCV_CACHE="$cache_dir/opencv_$OPENCV_PACKAGE_ETAG";
 
 if [ -d "$OPENCV_CACHE" ]; then
   echo "-----> Reusing cached OpenCV ($OPENCV_PACKAGE_ETAG)"
