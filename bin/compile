@@ -38,7 +38,7 @@ tar_extract.rewind # The extract has to be rewinded after every iteration
 tar_extract.close
 
 # Install OpenCV
-exec("cmake .")
+exec("cmake ./opencv-2.4.11")
 
 JavaBuildpack::Buildpack.with_buildpack(build_dir, 'Compile failed with exception %s') do |buildpack|
   buildpack.compile
