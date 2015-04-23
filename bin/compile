@@ -20,10 +20,25 @@ $stderr.sync = true
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
 require 'java_buildpack/buildpack'
+require 'open-uri'
+require 'rubygems/package'
+require 'zlib'
 
 build_dir = ARGV[0]
+cache_path = ARGV[1]
 
-exec("sudo -S apt-get install opencv")
+# Download OpenCV
+open('2.4.11.tar.gz', 'wb') do |file|
+  file << open('https://github.com/Itseez/opencv/archive/2.4.11.tar.gz').read
+end
+
+# Extract OpenCV
+tar_extract = Gem::Package::TarReader.new(Zlib::GzipReader.open('2.4.11.tar.gz'))
+tar_extract.rewind # The extract has to be rewinded after every iteration
+tar_extract.close
+
+# Install OpenCV
+exec("cmake .")
 
 JavaBuildpack::Buildpack.with_buildpack(build_dir, 'Compile failed with exception %s') do |buildpack|
   buildpack.compile
