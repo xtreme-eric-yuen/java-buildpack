@@ -28,7 +28,7 @@ build_dir = ARGV[0]
 cache_path = ARGV[1]
 
 # Download cake
-open('cmake-3.1.3-Linux-x86_64.tar.gz', wb) do |file| 
+open('cmake-3.1.3-Linux-x86_64.tar.gz', 'wb') do |file| 
 	file << open('http://www.cmake.org/files/v3.1/cmake-3.1.3-Linux-x86_64.tar.gz').read
 end
 
