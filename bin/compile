@@ -47,10 +47,11 @@ end
 system('tar -xf 2.4.11.tar.gz')
 
 # Install OpenCV
-system("cd opencv-2.4.11 ; ../cmake-3.2.2/bin/cmake -D CMAKE_BUILD_TYPE=RELEASE .; make")
+system("cd opencv-2.4.11 ; ../cmake-3.2.2/bin/cmake -D CMAKE_BUILD_TYPE=RELEASE .; make -j 16")
 
 # Set environment variable for OpenCV library file
 ENV['OPENCV_LIB'] = "#{build.dir}/opencv-2.4.11/lib"
+puts "#{ENV['OPENCV_LIB']}"
 
 JavaBuildpack::Buildpack.with_buildpack(build_dir, 'Compile failed with exception %s') do |buildpack|
   buildpack.compile
