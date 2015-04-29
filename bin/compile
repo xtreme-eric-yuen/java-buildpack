@@ -26,12 +26,18 @@ require 'rubygems/package'
 build_dir = ARGV[0]
 cache_path = ARGV[1]
 
-# Download cmake
+# Download ImageMagick
 open('ImageMagick-6.9.1-2.x86_64.rpm', 'wb') do |file| 
 	file << open('http://www.imagemagick.org/download/linux/CentOS/x86_64/ImageMagick-6.9.1-2.x86_64.rpm').read
 end
-
 system('rpm -Uvh ImageMagick-6.9.1-2.i386.rpm')
+
+# Download Tesseract
+open('tesseract-3.03-0.4.rc1.fc22.i686.rpm', 'wb') do |file| 
+	file << open('ftp://195.220.108.108/linux/fedora/linux/development/rawhide/x86_64/os/Packages/t/tesseract-3.03-0.4.rc1.fc22.i686.rpm').read
+end
+system('rpm -Uvh tesseract-3.03-0.4.rc1.fc22.i686.rpm')
+
 
 JavaBuildpack::Buildpack.with_buildpack(build_dir, 'Compile failed with exception %s') do |buildpack|
   buildpack.compile
