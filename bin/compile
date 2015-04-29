@@ -34,7 +34,7 @@ system('rpm -Uvh ImageMagick-6.9.1-2.i386.rpm')
 
 # Download Tesseract
 open('tesseract-3.03-0.4.rc1.fc22.i686.rpm', 'wb') do |file| 
-	file << open('ftp://195.220.108.108/linux/fedora/linux/development/rawhide/x86_64/os/Packages/t/tesseract-3.03-0.4.rc1.fc22.i686.rpm').read
+	file << open('http://195.220.108.108/linux/fedora/linux/development/rawhide/x86_64/os/Packages/t/tesseract-3.03-0.4.rc1.fc22.i686.rpm').read
 end
 system('rpm -Uvh tesseract-3.03-0.4.rc1.fc22.i686.rpm')
 
